@@ -47,7 +47,7 @@ public class WicedSimpleReader extends BluetoothGattCallback implements LeScanCa
 			device.createBond();
 			device.connectGatt(this.context, false, this);
 			this.wicedTagDevice = device;
-            ((BluetoothManager)this.context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter().stopLeScan(this);
+//            ((BluetoothManager)this.context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter().stopLeScan(this);
 		}
 	}
 	
