@@ -44,21 +44,25 @@ public class WicedSimpleReader extends BluetoothGattCallback implements LeScanCa
 			return;
 		}
 		if(device.getName().contains("WICED")&&this.wicedTagDevice==null){
-//			device.createBond();
+			device.createBond();
 			device.connectGatt(this.context, false, this);
 			this.wicedTagDevice = device;
+            ((BluetoothManager)this.context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter().stopLeScan(this);
 		}
 	}
 	
 	@Override
 	public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 //		Log.d(tag, "onConnectionStateChange("+(newState==BluetoothGatt.STATE_CONNECTED?"STATE_CONNECTED":"STATE_DISCONNECTED")+")");
+        Log.d(tag, "gatt.getDevice()="+gatt.getDevice()==null?"null":gatt.getDevice().getAddress());
+        Log.d(tag, "this.wicedTagDevice="+this.wicedTagDevice==null?"null":this.wicedTagDevice.getAddress());
 		if(newState==BluetoothGatt.STATE_CONNECTED){
 			this.bluetoothGatt = gatt;
 			gatt.discoverServices();
 		}
         else if(newState==BluetoothGatt.STATE_DISCONNECTED&&gatt.getDevice().getAddress().equals(this.wicedTagDevice.getAddress())){
             this.wicedTagDevice = null;
+//            ((BluetoothManager)this.context.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter().startLeScan(this);
         }
 	}
 	
