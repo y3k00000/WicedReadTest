@@ -100,17 +100,17 @@ public class WicedSimpleReader extends BluetoothGattCallback implements LeScanCa
 	}
 	
 	public final static class WicedInfo{
-		public int[] accelorMeterData, gyroData, magnoMeterData;
+		public int[] acceleroMeterData, gyroData, magnoMeterData;
 		public Float angle, humidity, pressure, temperatureCelsius;
 		public WicedInfo(
-				final int[] accelorMeterData,
+				final int[] acceleroMeterData,
 				final int[] gyroData,
 				final int[] magnoMeterData,
 				final Float angle,
 				final Float humidity,
 				final Float pressure,
 				final Float temperatureCelsius){
-			this.accelorMeterData = accelorMeterData;
+			this.acceleroMeterData = acceleroMeterData;
 			this.gyroData = gyroData;
 			this.magnoMeterData = magnoMeterData;
 			this.angle = angle;
@@ -132,14 +132,14 @@ public class WicedSimpleReader extends BluetoothGattCallback implements LeScanCa
     		case 19:
                 // packet type specifying accelerometer, gyro, magno
                 offset = 1;
-                int[] accelorMeterData = SensorDataParser.getAccelorometerData(data, offset);
+                int[] acceleroMeterData = SensorDataParser.getAccelorometerData(data, offset);
                 offset += SensorDataParser.SENSOR_ACCEL_DATA_SIZE;
                 int[] gyroData = SensorDataParser.getGyroData(data, offset);
                 offset += SensorDataParser.SENSOR_GYRO_DATA_SIZE;
                 int[] magnoMeterData =SensorDataParser.getMagnometerData(data, offset);
                 float angle = SensorDataParser.getCompassAngleDegrees(magnoMeterData);
                 offset += SensorDataParser.SENSOR_MAGNO_DATA_SIZE;
-                this.listener.onDataRead(new WicedInfo(accelorMeterData, gyroData, magnoMeterData, angle, null, null, null));
+                this.listener.onDataRead(new WicedInfo(acceleroMeterData, gyroData, magnoMeterData, angle, null, null, null));
                 break;
             case 7:
                 // packet type specifying temp, humid, press
