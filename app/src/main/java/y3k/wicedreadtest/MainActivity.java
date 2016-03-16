@@ -19,8 +19,8 @@ public class MainActivity extends Activity implements WicedSimpleReader.Listener
     
     @Override
     public void onDataRead(WicedInfo info) {
-    	if(info.accelorMeterData!=null){
-    		((TextView)findViewById(R.id.accelerometer)).setText("Accelerometer Data : "+Arrays.toString(info.accelorMeterData));
+    	if(info.acceleroMeterData!=null){
+    		((TextView)findViewById(R.id.accelerometer)).setText("Accelerometer Data : "+Arrays.toString(info.acceleroMeterData));
     	}
     	if(info.gyroData!=null){
     		((TextView)findViewById(R.id.gyro)).setText("Gyrocope Data : "+Arrays.toString(info.gyroData));

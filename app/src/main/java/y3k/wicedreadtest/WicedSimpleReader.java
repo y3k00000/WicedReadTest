@@ -88,10 +88,7 @@ public class WicedSimpleReader extends BluetoothGattCallback implements LeScanCa
 	public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 		Log.d(tag, "onCharacteristicChanged("+characteristic.getValue().length+")");
     	long currentMillis = new Date().getTime();
-    	if(currentMillis-lastUpdateMillis<(this.readInterval==null?0:this.readInterval)&&lastUpdateMillis>0){
-    		return;
-    	}
-    	else{
+    	if(currentMillis-lastUpdateMillis>(this.readInterval==null?0:this.readInterval)||lastUpdateMillis<0){
     		lastUpdateMillis = currentMillis;
 			Message message = new Message();
 			message.obj = characteristic.getValue();
@@ -121,35 +118,26 @@ public class WicedSimpleReader extends BluetoothGattCallback implements LeScanCa
 	}
 	
 	public interface Listener{
-		public void onDataRead(WicedInfo info);
+		void onDataRead(WicedInfo info);
 	}
 	
 	@Override
 	public boolean handleMessage(Message msg) {
 		byte[] data = (byte[])msg.obj;
-    	int offset;
     	switch (data.length) {
     		case 19:
                 // packet type specifying accelerometer, gyro, magno
-                offset = 1;
-                int[] acceleroMeterData = SensorDataParser.getAccelorometerData(data, offset);
-                offset += SensorDataParser.SENSOR_ACCEL_DATA_SIZE;
-                int[] gyroData = SensorDataParser.getGyroData(data, offset);
-                offset += SensorDataParser.SENSOR_GYRO_DATA_SIZE;
-                int[] magnoMeterData =SensorDataParser.getMagnometerData(data, offset);
+                int[] acceleroMeterData = SensorDataParser.getAccelorometerData(data, 1);
+                int[] gyroData = SensorDataParser.getGyroData(data, 1+SensorDataParser.SENSOR_ACCEL_DATA_SIZE);
+                int[] magnoMeterData =SensorDataParser.getMagnometerData(data, 1+SensorDataParser.SENSOR_ACCEL_DATA_SIZE+SensorDataParser.SENSOR_GYRO_DATA_SIZE);
                 float angle = SensorDataParser.getCompassAngleDegrees(magnoMeterData);
-                offset += SensorDataParser.SENSOR_MAGNO_DATA_SIZE;
                 this.listener.onDataRead(new WicedInfo(acceleroMeterData, gyroData, magnoMeterData, angle, null, null, null));
                 break;
             case 7:
                 // packet type specifying temp, humid, press
-                offset = 1;
-                float humidity = SensorDataParser.getHumidityPercent(data, offset);
-                offset += SensorDataParser.SENSOR_HUMD_DATA_SIZE;
-                float pressure = SensorDataParser.getPressureMBar(data, offset);
-                offset += SensorDataParser.SENSOR_PRES_DATA_SIZE;
-                float temperatureCelsius = SensorDataParser.getTemperatureC(data, offset);
-                offset += SensorDataParser.SENSOR_TEMP_DATA_SIZE;
+                float humidity = SensorDataParser.getHumidityPercent(data, 1);
+                float pressure = SensorDataParser.getPressureMBar(data, 1+SensorDataParser.SENSOR_HUMD_DATA_SIZE);
+                float temperatureCelsius = SensorDataParser.getTemperatureC(data, 1+1+SensorDataParser.SENSOR_HUMD_DATA_SIZE+SensorDataParser.SENSOR_PRES_DATA_SIZE);
                 this.listener.onDataRead(new WicedInfo(null, null, null, null, humidity, pressure, temperatureCelsius));
                 break;
             }
