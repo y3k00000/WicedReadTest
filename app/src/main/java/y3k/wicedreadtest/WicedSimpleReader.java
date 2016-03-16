@@ -137,7 +137,7 @@ public class WicedSimpleReader extends BluetoothGattCallback implements LeScanCa
                 // packet type specifying temp, humid, press
                 float humidity = SensorDataParser.getHumidityPercent(data, 1);
                 float pressure = SensorDataParser.getPressureMBar(data, 1+SensorDataParser.SENSOR_HUMD_DATA_SIZE);
-                float temperatureCelsius = SensorDataParser.getTemperatureC(data, 1+1+SensorDataParser.SENSOR_HUMD_DATA_SIZE+SensorDataParser.SENSOR_PRES_DATA_SIZE);
+                float temperatureCelsius = SensorDataParser.getTemperatureC(data, 1+SensorDataParser.SENSOR_HUMD_DATA_SIZE+SensorDataParser.SENSOR_PRES_DATA_SIZE);
                 this.listener.onDataRead(new WicedInfo(null, null, null, null, humidity, pressure, temperatureCelsius));
                 break;
             }
