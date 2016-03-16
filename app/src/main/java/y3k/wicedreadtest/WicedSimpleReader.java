@@ -57,6 +57,9 @@ public class WicedSimpleReader extends BluetoothGattCallback implements LeScanCa
 			this.bluetoothGatt = gatt;
 			gatt.discoverServices();
 		}
+        else if(newState==BluetoothGatt.STATE_DISCONNECTED&&gatt.getDevice().getAddress().equals(this.wicedTagDevice.getAddress())){
+            this.wicedTagDevice = null;
+        }
 	}
 	
 	@Override
